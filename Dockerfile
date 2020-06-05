@@ -1,5 +1,4 @@
-
-FROM python:3.7-slim as base
+FROM python:3.6-slim as base
 
 RUN apt-get update -qq \
  && apt-get install -y --no-install-recommends \
@@ -33,6 +32,7 @@ ENV PATH "/root/.poetry/bin:/opt/venv/bin:${PATH}"
 
 # copy files
 COPY . /build/
+COPY docker/configs/config_pretrained_embeddings_spacy_en.yml /build/config.yml
 
 # change working directory
 WORKDIR /build
@@ -41,10 +41,17 @@ WORKDIR /build
 RUN python -m venv /opt/venv && \
   . /opt/venv/bin/activate && \
   pip install --no-cache-dir -U 'pip<20' && \
-  poetry install --no-dev --no-root --no-interaction && \
+  poetry install --extras spacy --no-dev --no-root --no-interaction && \
   poetry build -f wheel -n && \
   pip install --no-deps dist/*.whl && \
   rm -rf dist *.egg-info
+
+# make sure we use the virtualenv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# spacy link
+RUN python -m spacy download en_core_web_md && \
+    python -m spacy link en_core_web_md en
 
 # start a new build stage
 FROM base as runner
@@ -60,7 +67,7 @@ WORKDIR /app
 RUN chgrp -R 0 /app && chmod -R g=u /app
 USER 1001
 
-# create a volume for temporary data
+# Create a volume for temporary data
 VOLUME /tmp
 
 # change shell
