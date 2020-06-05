@@ -34,9 +34,7 @@ ENV PATH "/root/.poetry/bin:/opt/venv/bin:${PATH}"
 # make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# spacy link
-RUN python -m spacy download en_core_web_md && \
-    python -m spacy link en_core_web_md en
+
 
 # start a new build stage
 FROM base as runner
