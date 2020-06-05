@@ -30,12 +30,6 @@ ENV POETRY_VERSION 1.0.3
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 ENV PATH "/root/.poetry/bin:/opt/venv/bin:${PATH}"
 
-# copy files
-
-COPY docker/configs/config_pretrained_embeddings_spacy_en.yml /build/config.yml
-
-# change working directory
-WORKDIR /build
 
 # install dependencies
 RUN python -m venv /opt/venv && \
@@ -57,7 +51,7 @@ RUN python -m spacy download en_core_web_md && \
 FROM base as runner
 
 # copy everything from /opt
-COPY --from=builder /opt/venv /opt/venv
+
 
 # make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
