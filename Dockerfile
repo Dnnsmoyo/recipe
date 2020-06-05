@@ -31,7 +31,7 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 ENV PATH "/root/.poetry/bin:/opt/venv/bin:${PATH}"
 
 # copy files
-COPY . /build/
+
 COPY docker/configs/config_pretrained_embeddings_spacy_en.yml /build/config.yml
 
 # change working directory
