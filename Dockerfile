@@ -1,62 +1,20 @@
-FROM python:3.6-slim as base
+# Extend the official Rasa SDK image
+FROM rasa/rasa-sdk:1.8.0
 
-RUN apt-get update -qq \
- && apt-get install -y --no-install-recommends \
-    # required by psycopg2 at build and runtime
-    libpq-dev \
-     # required for health check
-    curl \
- && apt-get autoremove -y
-
-FROM base as builder
-
-RUN apt-get update -qq && \
-  apt-get install -y --no-install-recommends \
-  build-essential \
-  wget \
-  openssh-client \
-  graphviz-dev \
-  pkg-config \
-  git-core \
-  openssl \
-  libssl-dev \
-  libffi6 \
-  libffi-dev \
-  libpng-dev
-
-# install poetry
-# keep this in sync with the version in pyproject.toml and Dockerfile
-ENV POETRY_VERSION 1.0.3
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-ENV PATH "/root/.poetry/bin:/opt/venv/bin:${PATH}"
-
-
-# make sure we use the virtualenv
-ENV PATH="/opt/venv/bin:$PATH"
-
-
-
-# start a new build stage
-FROM base as runner
-
-# copy everything from /opt
-
-
-# make sure we use the virtualenv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# update permissions & change user to not run as root
+# Use subdirectory as working directory
 WORKDIR /app
-RUN chgrp -R 0 /app && chmod -R g=u /app
+
+# Copy any additional custom requirements
+#COPY actions/requirements-actions.txt ./
+
+# Change back to root user to install dependencies
+USER root
+
+# Install extra requirements for actions code, if necessary (otherwise comment this out)
+#RUN pip install -r requirements-actions.txt
+
+# Copy actions folder to working directory
+COPY ./actions /app/actions
+
+# By best practices, don't run the code with root user
 USER 1001
-
-# Create a volume for temporary data
-VOLUME /tmp
-
-# change shell
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# the entry point
-EXPOSE 5005
-ENTRYPOINT ["rasa"]
-CMD ["--help"]
