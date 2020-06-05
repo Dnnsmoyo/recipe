@@ -31,15 +31,6 @@ RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-
 ENV PATH "/root/.poetry/bin:/opt/venv/bin:${PATH}"
 
 
-# install dependencies
-RUN python -m venv /opt/venv && \
-  . /opt/venv/bin/activate && \
-  pip install --no-cache-dir -U 'pip<20' && \
-  poetry install --extras spacy --no-dev --no-root --no-interaction && \
-  poetry build -f wheel -n && \
-  pip install --no-deps dist/*.whl && \
-  rm -rf dist *.egg-info
-
 # make sure we use the virtualenv
 ENV PATH="/opt/venv/bin:$PATH"
 
