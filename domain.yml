@@ -1,0 +1,46 @@
+actions:
+- action_recipe
+- action_restart
+- utter_confirm
+- utter_default
+- utter_deny
+- utter_did_that_help
+- utter_goodbye
+- utter_greet
+
+entities:
+- recipe
+
+intents:
+- greet
+- inform
+- goodbye
+- confirm
+- deny
+
+slots:
+  recipe:
+    type: text
+  requested_slot:
+    type: text
+    
+templates:
+  utter_confirm:
+  - text: Godd to know cheers!
+  utter_default:
+  - text: Sorry i did not understand that
+  utter_deny:
+  - text: Oh too bad!
+  utter_did_that_help:
+  - buttons:
+    - payload: /confirm
+      title: Yes
+    - payload: /deny
+      title: No
+    text: Was this helpful?
+  utter_goodbye:
+  - text: Talk to you later.
+  - text: Bye bye :(
+  utter_greet:
+  - text: Hello! Which recipe are you looking for?
+
