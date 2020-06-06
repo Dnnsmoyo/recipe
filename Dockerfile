@@ -4,9 +4,6 @@ FROM rasa/rasa
 # Install python and pip
 ADD ./requirements.txt /.
 
-# Add our code
-
-WORKDIR/app COPY ././
 
 # Expose is NOT supported by Heroku
 # EXPOSE 5000 		
