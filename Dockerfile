@@ -1,14 +1,11 @@
-#Grab the latest alpine image
-FROM rasa/rasa
+FROM ./
 
-# Install python and pip
-ADD ./requirements.txt /.
+ENV PORT 5005
+
+WORKDIR /app COPY ./ ./
+
+CMD [“run”, “-p”, “5005:$PORT”, “-m”, “models”,"–credentials", “credentials.yml”, “–enable-api”, “–log-file”, “out.log”, “–endpoints”, “endpoints.yml”]
+
+EXPOSE 5005
 
 
-# Expose is NOT supported by Heroku
-# EXPOSE 5000 		
-
-
-# Run the app.  CMD is required to run on Heroku
-# $PORT is set by Heroku			
-CMD $(echo “rasa run -p $PORT -m models --credentials credentials.yml --enable-api --log-file out.log --endpoints endpoints.yml” | sed ‘s/=//’)
