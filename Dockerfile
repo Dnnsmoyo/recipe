@@ -5,8 +5,8 @@ FROM rasa/rasa
 ADD ./requirements.txt /.
 
 # Add our code
-ADD ./app/ ./
-WORKDIR ./app
+
+WORKDIR/app COPY ././
 
 # Expose is NOT supported by Heroku
 # EXPOSE 5000 		
