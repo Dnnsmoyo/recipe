@@ -2,11 +2,7 @@
 FROM rasa/rasa
 
 # Install python and pip
-RUN apt-get update --no-cache python3 python3-pip bash
 ADD ./requirements.txt /.
-
-# Install dependencies
-RUN pip3 install --no-cache-dir -q -r ./requirements.txt
 
 # Add our code
 ADD ./app/ ./
