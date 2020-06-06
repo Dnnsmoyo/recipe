@@ -9,7 +9,7 @@ ADD ./requirements.txt /.
 RUN pip3 install --no-cache-dir -q -r ./requirements.txt
 
 # Add our code
-ADD ./app/
+ADD ./app/ ./
 WORKDIR ./app
 
 # Expose is NOT supported by Heroku
