@@ -1,6 +1,24 @@
-FROM ubuntu:18.04
-ENTRYPOINT []
-RUN apt-get update && apt-get install -y python3 python3-pip && python3 -m pip install --no-cache --upgrade pip && pip3 install --no-cache rasa==1.5.3
-ADD . /app/
-RUN chmod +x /app/start_services.sh
-CMD /app/start_services.sh
+#Grab the latest alpine image
+FROM rasa:latest
+
+# Install python and pip
+RUN apk add --no-cache --update python3 py3-pip bash
+ADD ./requirements.txt 
+
+# Install dependencies
+RUN pip3 install --no-cache-dir -q -r ./requirements.txt
+
+# Add our code
+ADD ./app/
+WORKDIR ./app
+
+# Expose is NOT supported by Heroku
+# EXPOSE 5000 		
+
+# Run the image as a non-root user
+RUN adduser -D myuser
+USER myuser
+
+# Run the app.  CMD is required to run on Heroku
+# $PORT is set by Heroku			
+CMD $(echo “rasa run -p $PORT -m models --credentials credentials.yml --enable-api --log-file out.log --endpoints endpoints.yml” | sed ‘s/=//’)
